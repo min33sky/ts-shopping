@@ -1,11 +1,10 @@
-import React from 'react';
 import { useQuery } from 'react-query';
 import Item from '../../components/Product/Item';
 import { fetcher, QueryKeys } from '../../queryClient';
-import { IGetProducts } from '../../typings/shop';
+import { IProducts } from '../../typings/shop';
 
 function ProductsList() {
-  const { data, isLoading, isFetching } = useQuery<IGetProducts[]>(
+  const { data, isLoading, isFetching } = useQuery<IProducts[]>(
     QueryKeys.PRODUCTS,
     () =>
       fetcher({
@@ -19,12 +18,13 @@ function ProductsList() {
     }
   );
 
-  if (isLoading || isFetching) {
+  if (!data) {
     <div>Loading....</div>;
   }
 
   return (
     <div>
+      <h2>상품 리스트</h2>
       <ul className="products">
         {data?.map((product) => (
           <Item key={product.id} {...product} />
