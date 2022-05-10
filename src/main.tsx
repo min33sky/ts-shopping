@@ -8,7 +8,7 @@ import { worker } from './mocks/browser';
 
 //? vite에서 process.env 사용하는 문법
 if (import.meta.env.DEV) {
-  worker.start();
+  worker.start(); // msw 시작
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

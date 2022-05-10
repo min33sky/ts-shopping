@@ -5,6 +5,9 @@ const cartState = atom<Map<string, number>>({
   default: new Map(),
 });
 
+/**
+ *? selectorFamily를 사용하면 selector와는 다르게 매개변수를 받아서 사용할 수 있다.
+ */
 export const cartItemSelector = selectorFamily<number | undefined, string>({
   key: 'cartItem',
   // 장바구니에 담은 해당 상품의 개수 가져오기

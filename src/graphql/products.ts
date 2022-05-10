@@ -13,6 +13,9 @@ export type Products = {
   products: Product[];
 };
 
+/**
+ * 상품 리스트를 가져오는 쿼리
+ */
 export const GET_PRODUCTS = gql`
   query GET_PRODUCTS {
     id
@@ -24,6 +27,9 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
+/**
+ * 특정 상품을 가져오는 쿼리
+ */
 export const GET_PRODUCT = gql`
   query GET_PRODUCT($id: string) {
     id

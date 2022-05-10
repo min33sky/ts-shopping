@@ -7,9 +7,10 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
+//************************* Rest API용 ********************************/
 const BASE_URL = 'https://fakestoreapi.com';
 
-// Create a client
+//? React-Query Client 생성 함수 (싱글톤 방식으로 생성)
 export const getClient = (() => {
   let client: QueryClient | null = null;
   return () => {
@@ -18,8 +19,8 @@ export const getClient = (() => {
         defaultOptions: {
           queries: {
             cacheTime: 1000 * 60 * 60 * 24, // 하루동안 캐시
-            staleTime: 1000 * 60, // 1분동안 최신 상태 유지
-            refetchOnMount: false,
+            // staleTime: 1000 * 60, // 1분동안 최신 상태 유지
+            // refetchOnMount: false,
             refetchOnReconnect: false,
             refetchOnWindowFocus: false,
           },
@@ -72,13 +73,14 @@ export const fetcher = async ({
   }
 };
 
-//* Graphql 설정
-
-const BASE_URL_ROOT = '/';
+//************************* Graphql API용 ********************************/
+const BASE_URL_GRAPHQL = '/';
 
 export const graphqlFetcher = (query: RequestDocument, variables = {}) =>
-  request(BASE_URL_ROOT, query, variables);
+  request(BASE_URL_GRAPHQL, query, variables);
 
+//* React-Query에서 사용할 QUERY kEYS
 export const QueryKeys = {
   PRODUCTS: 'PRODUCTS',
+  CART: 'CART',
 };

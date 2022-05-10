@@ -1,22 +1,52 @@
 @import './products';
+@import './cart';
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+
+  a {
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: black;
+  }
 }
 
 body {
-  background-color: azure;
-}
-
-#root {
+  background-color: #f5f6fa;
   max-width: 900px;
   margin: 0 auto;
   padding: 10px;
 }
 
 .gnb {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.4);
+  padding: 10px 20px;
+  margin-bottom: 10px;
+
+  border-bottom: 1px solid rgba($color: black, $alpha: 0.2);
+
+  li {
+    transition: transform 0.2s ease;
+  }
+
+  li:hover {
+    transform: translateY(-2px);
+  }
+
+  a {
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: gray;
+  }
+
   ul {
     padding: 0;
     list-style: none;
