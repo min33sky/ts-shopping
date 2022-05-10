@@ -1,3 +1,4 @@
+import request, { RequestDocument } from 'graphql-request';
 import {
   useQuery,
   useMutation,
@@ -70,6 +71,13 @@ export const fetcher = async ({
     console.error(error);
   }
 };
+
+//* Graphql 설정
+
+const BASE_URL_ROOT = '/';
+
+export const graphqlFetcher = (query: RequestDocument, variables = {}) =>
+  request(BASE_URL_ROOT, query, variables);
 
 export const QueryKeys = {
   PRODUCTS: 'PRODUCTS',

@@ -1,16 +1,12 @@
 import { useQuery } from 'react-query';
 import Item from '../../components/product/Item';
-import { fetcher, QueryKeys } from '../../queryClient';
-import { IProducts } from '../../typings/shop';
+import { GET_PRODUCTS, Products } from '../../graphql/products';
+import { fetcher, graphqlFetcher, QueryKeys } from '../../queryClient';
 
 function ProductsList() {
-  const { data, isLoading, isFetching } = useQuery<IProducts[]>(
+  const { data, isLoading, isFetching } = useQuery<Products>(
     QueryKeys.PRODUCTS,
-    () =>
-      fetcher({
-        method: 'GET',
-        path: '/products',
-      }),
+    () => graphqlFetcher(GET_PRODUCTS),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -18,15 +14,11 @@ function ProductsList() {
     }
   );
 
-  if (!data) {
-    <div>Loading....</div>;
-  }
-
   return (
     <div>
       <h2>상품 리스트</h2>
       <ul className="products">
-        {data?.map((product) => (
+        {data?.products.map((product) => (
           <Item key={product.id} {...product} />
         ))}
       </ul>

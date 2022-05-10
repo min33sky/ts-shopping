@@ -1,17 +1,11 @@
-import { IProducts } from '../../typings/shop';
+import { Product } from '../../graphql/products';
 
-function ProductDetail({
-  item: { category, description, image, price, rating, title },
-}: {
-  item: IProducts;
-}) {
+function ProductDetail({ item: { description, imageUrl, price, title } }: { item: Product }) {
   return (
     <div className="product-detail">
-      <p className="product-detail__category">{category}</p>
       <p className="product-detail__title">{title}</p>
-      <img className="product-detail__image" src={image} alt="product_image" />
+      <img className="product-detail__image" src={imageUrl} alt="product_image" />
       <p className="product-detail__price">{price}</p>
-      <p className="product-detail__rating">{rating.rate}</p>
     </div>
   );
 }
