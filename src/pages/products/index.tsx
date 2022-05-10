@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import Item from '../../components/Product/Item';
+import Item from '../../components/product/Item';
 import { fetcher, QueryKeys } from '../../queryClient';
 import { IProducts } from '../../typings/shop';
 

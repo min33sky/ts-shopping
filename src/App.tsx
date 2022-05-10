@@ -3,6 +3,7 @@ import { useRoutes } from 'react-router-dom';
 import { getClient } from './queryClient';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { routes } from './routes';
+import Gnb from './components/Gnb';
 
 function App() {
   const element = useRoutes(routes);
@@ -10,6 +11,7 @@ function App() {
 
   return (
     <QueryClientProvider client={client}>
+      <Gnb />
       {element}
       <ReactQueryDevtools />
     </QueryClientProvider>

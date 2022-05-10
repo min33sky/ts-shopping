@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import ProductDetail from '../../components/Product/Detail';
+import ProductDetail from '../../components/product/Detail';
 import { fetcher, QueryKeys } from '../../queryClient';
 import { IProducts } from '../../typings/shop';
 

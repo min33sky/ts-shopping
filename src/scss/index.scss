@@ -9,3 +9,18 @@
 body {
   background-color: azure;
 }
+
+#root {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.gnb {
+  ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+  }
+}
