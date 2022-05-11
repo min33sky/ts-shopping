@@ -116,7 +116,7 @@ function CartItem(
       <input className="cart-item__checkbox" type="checkbox" name="select-item" ref={ref} />
       <img className="cart-item__image" src={imageUrl} alt="productImage" />
       <p className="cart-item__title">{title}</p>
-      <p className="cart-item__price">{price}</p>
+      <p className="cart-item__price">${price}</p>
       <input
         type="number"
         className="cart-item__amount"

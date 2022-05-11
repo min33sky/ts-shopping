@@ -4,19 +4,20 @@ import CartItem from './CartItem';
 
 function CartList({ items }: { items: CartType[] }) {
   const formRef = useRef<HTMLFormElement>(null);
-  const checkboxRefs = items.map(() => createRef<HTMLInputElement>());
+  const checkboxRefs = items.map(() => createRef<HTMLInputElement>()); //? 자식 컴퍼넌트들의 ref
 
   const handleCheckboxChanged = (e: React.FormEvent<HTMLFormElement>) => {
     if (!formRef.current) return;
 
-    const targetInput = e.target as HTMLInputElement; // 이벤트가 발생한 체크박스
+    const targetInput = e.target as HTMLInputElement; //? 이벤트가 발생한 체크박스
 
-    // const checkboxes = formRef.current.querySelectorAll<HTMLInputElement>('.cart-item__checkbox');
-
-    //? FormData를 사용하면 name을 설정한 DOM을 가져올 수 있다.
+    //? FormData로 input의 name을 설정한 DOM을 가져올 수 있다.
     const data = new FormData(formRef.current);
+
+    //* 체크박스 개수
     const selectedCount = data.getAll('select-item').length;
 
+    //* 전체 선택 체크박스 관련
     if (targetInput.name === 'select-all') {
       const allChecked = targetInput.checked;
       checkboxRefs.forEach((inputElem) => {

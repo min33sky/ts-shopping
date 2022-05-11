@@ -8,10 +8,11 @@
 
   a {
     text-decoration: none;
+    color: gray;
   }
 
   a:visited {
-    color: black;
+    color: gray;
   }
 }
 
@@ -25,7 +26,8 @@ body {
 .gnb {
   font-size: 1.5rem;
   font-weight: bold;
-  text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.4);
+
+  text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
   padding: 10px 20px;
   margin-bottom: 10px;
 
@@ -40,6 +42,7 @@ body {
   }
 
   a {
+    color: black;
     transition: color 0.2s ease;
   }
 
@@ -51,6 +54,6 @@ body {
     padding: 0;
     list-style: none;
     display: flex;
-    gap: 10px;
+    gap: 20px;
   }
 }
