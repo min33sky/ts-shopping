@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ForwardedRef, forwardRef } from 'react';
 import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
 import { CartType, DELETE_CART, UPDATE_CART } from '../../graphql/cart';
 import { graphqlFetcher, QueryKeys } from '../../queryClient';
@@ -12,7 +12,14 @@ type CartUpdateVariables = {
   amount: number;
 };
 
-function CartItem({ item: { amount, id, imageUrl, price, title } }: { item: CartType }) {
+function CartItem(
+  {
+    item: { amount, id, imageUrl, price, title },
+  }: {
+    item: CartType;
+  },
+  ref: ForwardedRef<HTMLInputElement>
+) {
   const queryClient = useQueryClient();
 
   const { mutate: updateCart } = useMutation<CartContext, Error, CartUpdateVariables, CartContext>(
@@ -96,6 +103,7 @@ function CartItem({ item: { amount, id, imageUrl, price, title } }: { item: Cart
 
   const handleUpdateAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = Number(e.target.value);
+    if (amount < 1) return;
     updateCart({ id, amount });
   };
 
@@ -105,7 +113,7 @@ function CartItem({ item: { amount, id, imageUrl, price, title } }: { item: Cart
 
   return (
     <li className="cart-item">
-      <input className="cart-item__checkbox" type="checkbox" />
+      <input className="cart-item__checkbox" type="checkbox" name="select-item" ref={ref} />
       <img className="cart-item__image" src={imageUrl} alt="productImage" />
       <p className="cart-item__title">{title}</p>
       <p className="cart-item__price">{price}</p>
@@ -113,6 +121,7 @@ function CartItem({ item: { amount, id, imageUrl, price, title } }: { item: Cart
         type="number"
         className="cart-item__amount"
         value={amount}
+        min={1}
         onChange={handleUpdateAmount}
       />
       <button className="cart-item__remove" onClick={handleDeleteCart}>
@@ -122,4 +131,4 @@ function CartItem({ item: { amount, id, imageUrl, price, title } }: { item: Cart
   );
 }
 
-export default CartItem;
+export default forwardRef(CartItem);
