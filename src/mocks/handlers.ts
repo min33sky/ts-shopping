@@ -1,7 +1,7 @@
 import { graphql } from 'msw';
 import { GET_PRODUCT, GET_PRODUCTS } from '../graphql/products';
 import { v4 as uuid } from 'uuid';
-import { ADD_CART, CartType, GET_CART, UPDATE_CART } from '../graphql/cart';
+import { ADD_CART, CartType, DELETE_CART, GET_CART, UPDATE_CART } from '../graphql/cart';
 
 //? 상품 데이터 생성
 const mock_products = (() =>
@@ -74,5 +74,12 @@ export const handlers = [
     cartData = newCartData;
 
     return res(ctx.data(newItem));
+  }),
+
+  graphql.mutation(DELETE_CART, ({ variables: { id } }, res, ctx) => {
+    const newData = { ...cartData };
+    delete newData[id];
+    cartData = newData;
+    return res(ctx.data(id));
   }),
 ];

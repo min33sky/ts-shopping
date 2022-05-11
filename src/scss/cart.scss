@@ -18,4 +18,9 @@
     height: 100px;
     object-fit: contain;
   }
+
+  &__amount {
+    text-align: right;
+    width: 50px;
+  }
 }
