@@ -2,6 +2,7 @@ import { graphql } from 'msw';
 import { GET_PRODUCT, GET_PRODUCTS } from '../graphql/products';
 import { v4 as uuid } from 'uuid';
 import { ADD_CART, CartType, DELETE_CART, GET_CART, UPDATE_CART } from '../graphql/cart';
+import { EXECUTE_PAY } from '../graphql/payment';
 
 //? 상품 데이터 생성
 const mock_products = (() =>
@@ -81,5 +82,10 @@ export const handlers = [
     delete newData[id];
     cartData = newData;
     return res(ctx.data(id));
+  }),
+
+  graphql.mutation(EXECUTE_PAY, (req, res, ctx) => {
+    console.log(req.variables);
+    return res();
   }),
 ];

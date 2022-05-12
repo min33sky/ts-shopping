@@ -3,9 +3,11 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { checkedCartState } from '../../atoms/cart';
 import { CartType } from '../../graphql/cart';
 import CartItem from './CartItem';
-import PreviewPay from './PreviewPay';
+import PreviewPay from '../previewPay/PreviewPay';
+import { useNavigate } from 'react-router-dom';
 
 function CartList({ items }: { items: CartType[] }) {
+  const navigate = useNavigate();
   const [checkedCartData, setCheckedCartData] = useRecoilState(checkedCartState);
   const [formData, setFormData] = useState<FormData>();
 
@@ -71,6 +73,11 @@ function CartList({ items }: { items: CartType[] }) {
     setCheckedCartData(checkedItems);
   }, [formData, items]);
 
+  const handleSubmit = () => {
+    if (checkedCartData.length === 0) return alert('결제할 대상이 없어요.');
+    navigate('/payment');
+  };
+
   return (
     <div>
       <form ref={formRef} onChange={handleCheckboxChanged}>
@@ -90,7 +97,7 @@ function CartList({ items }: { items: CartType[] }) {
           ))}
         </ul>
       </form>
-      <PreviewPay />
+      <PreviewPay handleTitle="결제 미리보기" handleSubmit={handleSubmit} />
     </div>
   );
 }
