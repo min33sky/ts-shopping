@@ -10,7 +10,6 @@ import PaymentModal from './Modal';
 
 type PayInfo = {
   id: string;
-  amount: number;
 };
 
 type PaymentInfos = PayInfo[];
@@ -29,8 +28,7 @@ function Payment() {
 
   // 결제 진행~~
   const proceed = () => {
-    //? 체크한 상품들에서 id와 수량을 가져와서 결제
-    const payInfos = checkedCartData.map(({ id, amount }) => ({ id, amount }));
+    const payInfos = checkedCartData.map(({ id }) => ({ id }));
     executePay(payInfos);
     setCheckCartData([]); //? 결제한 상품들은 recoil에서 제거
     navigate('/products', { replace: true }); // 뒤로가기 ㄴㄴ

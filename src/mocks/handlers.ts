@@ -8,7 +8,7 @@ import { EXECUTE_PAY } from '../graphql/payment';
 const mock_products = (() =>
   Array.from({ length: 20 }).map((_, i) => ({
     id: i + 1 + '', //! uuid는 url과 mock데이터의 id가 일치하지 않아서 사용안함
-    imageUrl: `https://placeimg.com/640/480/${i + 1}`,
+    imageUrl: `https://picsum.photos/id/${i * 4}/200/200`,
     price: 50000,
     title: `임시상품${i + 1}`,
     description: `임시상세내용${i + 1}`,
@@ -88,9 +88,13 @@ export const handlers = [
     return res(ctx.data(id));
   }),
 
-  // TODO: 결제
-  graphql.mutation(EXECUTE_PAY, (req, res, ctx) => {
-    console.log('결제 상품들 : ', req.variables);
-    return res();
+  // 결제하기
+  graphql.mutation(EXECUTE_PAY, ({ variables }, res, ctx) => {
+    //* 구매 확정인 상품들을 카트에서 삭제해주자
+    variables.forEach(({ id }: { id: string }) => {
+      delete cartData[id];
+    });
+
+    return res(ctx.data(variables));
   }),
 ];

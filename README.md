@@ -21,3 +21,12 @@
 )
 
 2. Sass 사용 설정 [링크](https://vitejs.dev/guide/features.html#css-pre-processors)
+
+## Coding Note
+
+1. graphql query를 작성할 때 `gql` import 주의!!
+
+```js
+import { gql } from 'graphql-tag'; // Ok!!
+import { gql } from 'graphql-request'; // Nooooooooooo
+```
