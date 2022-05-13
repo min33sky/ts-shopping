@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -27,14 +27,15 @@ function Payment() {
     setModalShown(true);
   };
 
+  // 결제 진행~~
   const proceed = () => {
-    // 결제 진행~~
     const payInfos = checkedCartData.map(({ id, amount }) => ({ id, amount }));
     executePay(payInfos);
     setCheckCartData([]);
     navigate('/products', { replace: true });
   };
 
+  // 모달 종료
   const cancel = () => {
     setModalShown(false);
   };

@@ -21,6 +21,7 @@ function PaymentModal({
   return show ? (
     <ModalPortal>
       <div className={`modal ${show && 'show'}`}>
+        <div className="modal__outer" onClick={cancel}></div>
         <div className="modal__inner">
           <p>정말 결제할까요?</p>
           <div>

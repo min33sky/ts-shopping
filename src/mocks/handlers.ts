@@ -7,7 +7,7 @@ import { EXECUTE_PAY } from '../graphql/payment';
 //? 상품 데이터 생성
 const mock_products = (() =>
   Array.from({ length: 20 }).map((_, i) => ({
-    id: i + 1 + '', //? uuid는 url과 mock데이터의 id가 일치하지 않아서 사용안함
+    id: i + 1 + '', //! uuid는 url과 mock데이터의 id가 일치하지 않아서 사용안함
     imageUrl: `https://placeimg.com/640/480/${i + 1}`,
     price: 50000,
     title: `임시상품${i + 1}`,
@@ -31,13 +31,15 @@ export const handlers = [
   graphql.query(GET_PRODUCT, (req, res, ctx) => {
     const found = mock_products.find((item) => item.id === req.body?.variables.id);
     if (found) return res(ctx.data(found));
-    return res();
+    return res(ctx.status(404));
   }),
 
+  // 장바구니 목록 가져오기
   graphql.query(GET_CART, (req, res, ctx) => {
     return res(ctx.data(cartData));
   }),
 
+  // 장바구니에 추가
   graphql.mutation(ADD_CART, (req, res, ctx) => {
     const newCartData = { ...cartData };
     const id = req.variables.id;
@@ -59,6 +61,7 @@ export const handlers = [
     return res(ctx.data(newItem));
   }),
 
+  // 장바구니에서 수량 변경
   graphql.mutation(UPDATE_CART, (req, res, ctx) => {
     const newCartData = { ...cartData };
     const { id, amount } = req.variables;
@@ -77,6 +80,7 @@ export const handlers = [
     return res(ctx.data(newItem));
   }),
 
+  // 장바구니에서 상품 제거
   graphql.mutation(DELETE_CART, ({ variables: { id } }, res, ctx) => {
     const newData = { ...cartData };
     delete newData[id];
@@ -84,6 +88,7 @@ export const handlers = [
     return res(ctx.data(id));
   }),
 
+  // TODO: 결제
   graphql.mutation(EXECUTE_PAY, (req, res, ctx) => {
     console.log(req.variables);
     return res();
