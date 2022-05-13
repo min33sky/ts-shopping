@@ -90,7 +90,7 @@ export const handlers = [
 
   // TODO: 결제
   graphql.mutation(EXECUTE_PAY, (req, res, ctx) => {
-    console.log(req.variables);
+    console.log('결제 상품들 : ', req.variables);
     return res();
   }),
 ];

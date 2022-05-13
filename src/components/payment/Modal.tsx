@@ -2,7 +2,8 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 
 /**
- * 모달을 위한 포탈 생성 컴포넌트
+ * * 모달을 위한 포탈 생성 컴포넌트
+ * ? index.html에 모달을 랜더링 할 DOM을 미리 생성해야 한다.
  * @returns
  */
 export function ModalPortal({ children }: { children: React.ReactNode }) {

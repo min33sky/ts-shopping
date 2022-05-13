@@ -1,6 +1,6 @@
 import { Product } from '../../graphql/products';
 
-function ProductDetail({ item: { description, imageUrl, price, title } }: { item: Product }) {
+function ProductDetail({ item: { imageUrl, price, title } }: { item: Product }) {
   return (
     <div className="product-detail">
       <p className="product-detail__title">{title}</p>

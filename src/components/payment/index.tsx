@@ -29,10 +29,11 @@ function Payment() {
 
   // 결제 진행~~
   const proceed = () => {
+    //? 체크한 상품들에서 id와 수량을 가져와서 결제
     const payInfos = checkedCartData.map(({ id, amount }) => ({ id, amount }));
     executePay(payInfos);
-    setCheckCartData([]);
-    navigate('/products', { replace: true });
+    setCheckCartData([]); //? 결제한 상품들은 recoil에서 제거
+    navigate('/products', { replace: true }); // 뒤로가기 ㄴㄴ
   };
 
   // 모달 종료

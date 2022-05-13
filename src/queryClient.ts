@@ -79,7 +79,7 @@ const BASE_URL_GRAPHQL = '/';
 export const graphqlFetcher = (query: RequestDocument, variables = {}) =>
   request(BASE_URL_GRAPHQL, query, variables);
 
-//* React-Query에서 사용할 QUERY kEYS
+//************************* React-Query에서 사용할 QUERY kEYS**************/
 export const QueryKeys = {
   PRODUCTS: 'PRODUCTS',
   CART: 'CART',

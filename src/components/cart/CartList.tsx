@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { checkedCartState } from '../../atoms/cart';
 import { CartType } from '../../graphql/cart';
 import CartItem from './CartItem';
@@ -12,25 +12,34 @@ function CartList({ items }: { items: CartType[] }) {
   const [formData, setFormData] = useState<FormData>();
 
   const formRef = useRef<HTMLFormElement>(null);
-  const checkboxRefs = items.map(() => createRef<HTMLInputElement>()); //? 자식 컴퍼넌트들의 ref
+  const checkboxRefs = items.map(() => createRef<HTMLInputElement>()); //? 자식 컴포넌트들의 ref 배열
 
+  /**
+   *? 자식 체크박스들이 전체 선택 체크박스를 제어하는 핸들러
+   ** 모두 체크되었다면 전체 선택 체크박스도 체크
+   */
   const setAllCheckedFromItems = () => {
     if (!formRef.current) return;
     const data = new FormData(formRef.current);
-    const selectedCount = data.getAll('select-item').length; //* 체크박스 개수
-    const allChecked = selectedCount === items.length;
-    formRef.current.querySelector<HTMLInputElement>('#select-all')!.checked = allChecked;
+    const selectedCount = data.getAll('select-item').length; //* 체크된 체크박스의 개수를 가져옴
+    const isAllChecked = selectedCount === items.length;
+    formRef.current.querySelector<HTMLInputElement>('#select-all')!.checked = isAllChecked;
   };
 
+  /**
+   *? 전체 선택 체크박스로 자식 체크박스들 제어하는 핸들러
+   * @param targetInput 전체선택 핸들러
+   */
   const setItemsCheckedFromAll = (targetInput: HTMLInputElement) => {
-    const allChecked = targetInput.checked;
+    const isChecked = targetInput.checked;
     checkboxRefs.forEach((inputElem) => {
-      inputElem.current!.checked = allChecked;
+      inputElem.current!.checked = isChecked;
     });
   };
 
   /**
    * 폼 이벤트 핸들러
+   *
    * @param e
    * @returns
    */
@@ -46,18 +55,21 @@ function CartList({ items }: { items: CartType[] }) {
       setAllCheckedFromItems();
     }
 
-    //? FormData로 input의 name을 설정한 DOM을 가져올 수 있다.
+    /**
+     *? FormData로 input의 name을 설정한 DOM을 가져올 수 있다.
+     *? 아래 useEffect를 재호출하기 위해 Formdata가 변할 때마다 상태를 저장한다.
+     */
     const data = new FormData(formRef.current);
-    //? 아래 useEffect를 재호출하기 위해 Formdata가 변할 때마다 상태를 저장한다.
     setFormData(data);
   };
 
-  /**
-   *? 체크한 상품들의 체크 정보를 기억하기
-   *? - 뒤로가기 했을 때 기존의 체크해놓은 상품들을 복구
-   */
   useEffect(() => {
+    /**
+     *? 체크한 상품들의 체크 정보를 기억하기
+     *? - 결제 화면에서 뒤로가기 했을 때 기존의 체크해놓은 상품들을 복구하기 위해서
+     */
     checkedCartData.forEach((item) => {
+      //* 체크한 상품들의 위치를 알기 위해서 dataset의 값과 일치하는 DOM을 찾아서 체크박스에 체크
       const itemRef = checkboxRefs.find((ref) => ref.current?.dataset.id === item.id);
       if (itemRef) itemRef.current!.checked = true;
     });
@@ -65,7 +77,9 @@ function CartList({ items }: { items: CartType[] }) {
   }, []);
 
   useEffect(() => {
-    //? 체크한 상품들의 정보를 가져와서 Recoil에 저장
+    /**
+     *? 체크박스에 체크한 상품들의 정보를 Recoil에 저장해둔다. (껼제할 때 사용)
+     */
     const checkedItems = checkboxRefs.reduce<CartType[]>((res, ref, i) => {
       if (ref.current?.checked) res.push(items[i]);
       return res;
@@ -97,6 +111,7 @@ function CartList({ items }: { items: CartType[] }) {
           ))}
         </ul>
       </form>
+
       <PreviewPay handleTitle="결제 미리보기" handleSubmit={handleSubmit} />
     </div>
   );
