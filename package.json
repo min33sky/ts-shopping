@@ -1,34 +1,26 @@
 {
   "name": "ts-shopping",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "client": "yarn workspace client dev",
+    "server": "yarn workspace server dev",
+    "start": "cd server && npm run serve"
   },
-  "dependencies": {
-    "graphql-request": "^4.2.0",
-    "graphql-tag": "^2.12.6",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-query": "^3.39.0",
-    "react-router-dom": "^6.3.0",
-    "recoil": "^0.7.3-alpha.2",
-    "uuid": "^8.3.2",
-    "vite-plugin-next-react-router": "^0.6.2"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/min33sky/ts-shopping.git"
   },
-  "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "@types/uuid": "^8.3.4",
-    "@vitejs/plugin-react": "^1.3.0",
-    "msw": "^0.39.2",
-    "sass": "^1.51.0",
-    "typescript": "^4.6.3",
-    "vite": "^2.9.7"
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/min33sky/ts-shopping/issues"
   },
-  "msw": {
-    "workerDirectory": "public"
-  }
+  "homepage": "https://github.com/min33sky/ts-shopping#readme",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ]
 }
