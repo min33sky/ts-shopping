@@ -51,7 +51,7 @@ const cartResolver: Resolver = {
       return newItem;
     },
     updateCart: (parent, { cartId, amount }, { db }, info) => {
-      const existCartIndex = db.products.findIndex((item) => item.id === cartId);
+      const existCartIndex = db.cart.findIndex((item) => item.id === cartId);
 
       if (existCartIndex === -1) throw new Error('상품이 존재하지 않습니다.');
 

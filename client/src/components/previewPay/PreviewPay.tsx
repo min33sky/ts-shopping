@@ -15,13 +15,16 @@ function PreviewPay({
   handleTitle: string;
 }) {
   const checkedItems = useRecoilValue(checkedCartState);
-  const totalPrice = checkedItems.reduce((acc, { amount, price }) => (acc += amount * price), 0);
+  const totalPrice = checkedItems.reduce(
+    (acc, { amount, product: { price } }) => (acc += amount * price),
+    0
+  );
 
   return (
     <div className="cart-preview">
       <h2>{handleTitle}</h2>
       <ul>
-        {checkedItems.map(({ id, imageUrl, price, title, amount }) => (
+        {checkedItems.map(({ id, product: { imageUrl, price, title }, amount }) => (
           <li key={id}>
             <CartItemData imageUrl={imageUrl} price={price} title={title} />
             <div>

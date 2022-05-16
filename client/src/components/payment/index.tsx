@@ -8,18 +8,14 @@ import { graphqlFetcher } from '../../queryClient';
 import PreviewPay from '../previewPay/PreviewPay';
 import PaymentModal from './Modal';
 
-type PayInfo = {
-  id: string;
-};
-
-type PaymentInfos = PayInfo[];
+type PaymentInfos = string[];
 
 function Payment() {
   const navigate = useNavigate();
   const [checkedCartData, setCheckCartData] = useRecoilState(checkedCartState);
   const [modalShown, setModalShown] = useState(false);
-  const { mutate: executePay } = useMutation((payInfos: PaymentInfos) =>
-    graphqlFetcher(EXECUTE_PAY, payInfos)
+  const { mutate: executePay } = useMutation((ids: PaymentInfos) =>
+    graphqlFetcher(EXECUTE_PAY, { ids })
   );
 
   const showModal = () => {
@@ -28,10 +24,14 @@ function Payment() {
 
   // 결제 진행~~
   const proceed = () => {
-    const payInfos = checkedCartData.map(({ id }) => ({ id }));
-    executePay(payInfos);
-    setCheckCartData([]); //? 결제한 상품들은 recoil에서 제거
-    navigate('/products', { replace: true }); // 뒤로가기 ㄴㄴ
+    const ids = checkedCartData.map(({ id }) => id);
+    executePay(ids, {
+      onSuccess: () => {
+        setCheckCartData([]); //? 결제한 상품들은 recoil에서 제거
+        alert('결제 성공 :)');
+        navigate('/products', { replace: true }); // 뒤로가기 ㄴㄴ
+      },
+    });
   };
 
   // 모달 종료

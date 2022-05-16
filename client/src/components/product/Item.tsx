@@ -8,7 +8,9 @@ import { graphqlFetcher } from '../../queryClient';
 function ProductItem({ imageUrl, id, price, title }: Product) {
   // const [cartAmount, setCartAmount] = useRecoilState(cartItemSelector(id));
 
-  const { mutate: addCart } = useMutation((id: string) => graphqlFetcher(ADD_CART, { id }));
+  const { mutate: addCart } = useMutation((id: string) =>
+    graphqlFetcher(ADD_CART, { productId: id })
+  );
 
   const handleAddCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     //? 장바구니 버튼은 Link 이벤트가 호출되지 않도록 막는다.

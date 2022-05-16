@@ -74,7 +74,7 @@ export const fetcher = async ({
 };
 
 //************************* Graphql API용 ********************************/
-const BASE_URL_GRAPHQL = '/';
+const BASE_URL_GRAPHQL = 'http://localhost:8000/graphql';
 
 export const graphqlFetcher = (query: RequestDocument, variables = {}) =>
   request(BASE_URL_GRAPHQL, query, variables);

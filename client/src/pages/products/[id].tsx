@@ -10,13 +10,13 @@ import { fetcher, graphqlFetcher, QueryKeys } from '../../queryClient';
  */
 function ProductDetailPage() {
   const { id } = useParams();
-  const { data } = useQuery<Product>([QueryKeys.PRODUCTS, id], () =>
+  const { data } = useQuery<{ product: Product }>([QueryKeys.PRODUCTS, id], () =>
     graphqlFetcher(GET_PRODUCT, { id })
   );
 
   if (!data) return <div>Loading....</div>;
 
-  return <ProductDetail item={data} />;
+  return <ProductDetail item={data.product} />;
 }
 
 export default ProductDetailPage;

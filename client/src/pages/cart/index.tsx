@@ -8,13 +8,13 @@ import { graphqlFetcher, QueryKeys } from '../../queryClient';
  * @returns
  */
 function CartPage() {
-  const { data } = useQuery(QueryKeys.CART, () => graphqlFetcher(GET_CART), {
+  const { data } = useQuery<{ cart: CartType[] }>(QueryKeys.CART, () => graphqlFetcher(GET_CART), {
     //? 장바구니는 바로바로 업데이트를 해야되기 때문에 캐시 ㄴㄴ
     cacheTime: 0,
     staleTime: 0,
   });
 
-  const cartItems = Object.values(data || []) as CartType[];
+  const cartItems = data?.cart || [];
 
   if (cartItems.length === 0) return <p>장바구니가 비어있어요 :|</p>;
 
