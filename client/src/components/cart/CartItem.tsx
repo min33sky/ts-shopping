@@ -21,6 +21,10 @@ type CartUpdateVariables = {
   amount: number;
 };
 
+type CartDeleteVariables = {
+  id: string;
+};
+
 function CartItem(
   {
     item: { amount, id, product },
@@ -31,6 +35,9 @@ function CartItem(
 ) {
   const queryClient = useQueryClient();
 
+  /**
+   ** 상품 수량 업데이트
+   */
   const { mutate: updateCart } = useMutation<UpdateResponse, Error, CartUpdateVariables>(
     ({ id, amount }) => graphqlFetcher(UPDATE_CART, { id, amount }),
     {
@@ -71,7 +78,10 @@ function CartItem(
     }
   );
 
-  const { mutate: deleteCart } = useMutation<DeleteResponse, Error, { id: string }>(
+  /**
+   ** 장바구니에서 해당 상품 삭제
+   */
+  const { mutate: deleteCart } = useMutation<DeleteResponse, Error, CartDeleteVariables>(
     ({ id }) => graphqlFetcher(DELETE_CART, { id }),
     {
       // When mutate is called:
@@ -82,7 +92,6 @@ function CartItem(
         const { cart: prevCart } = queryClient.getQueryData<CartContext>(QueryKeys.CART) || {
           cart: [],
         };
-        console.log('1111');
 
         if (!prevCart) return null;
 
@@ -133,7 +142,7 @@ function CartItem(
         ref={ref}
         data-id={id}
       />
-      <CartItemData price={product.price} imageUrl={product.imageUrl} title={product.title} />
+      <CartItemData product={product} />
       <input
         type="number"
         className="cart-item__amount"

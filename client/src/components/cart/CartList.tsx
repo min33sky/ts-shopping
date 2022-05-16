@@ -20,8 +20,8 @@ function CartList({ items }: { items: CartType[] }) {
    */
   const setAllCheckedFromItems = () => {
     if (!formRef.current) return;
-    const data = new FormData(formRef.current);
-    const selectedCount = data.getAll('select-item').length; //* 체크된 체크박스의 개수를 가져옴
+    const formData = new FormData(formRef.current);
+    const selectedCount = formData.getAll('select-item').length; //* 체크된 체크박스의 개수를 가져옴
     const isAllChecked = selectedCount === items.length;
     formRef.current.querySelector<HTMLInputElement>('#select-all')!.checked = isAllChecked;
   };
@@ -32,9 +32,7 @@ function CartList({ items }: { items: CartType[] }) {
    */
   const setItemsCheckedFromAll = (targetInput: HTMLInputElement) => {
     const isChecked = targetInput.checked;
-    checkboxRefs.forEach((inputElem) => {
-      inputElem.current!.checked = isChecked;
-    });
+    checkboxRefs.forEach((inputElem) => (inputElem.current!.checked = isChecked));
   };
 
   /**

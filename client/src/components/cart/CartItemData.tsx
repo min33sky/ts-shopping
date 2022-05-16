@@ -1,6 +1,6 @@
 import { CartType } from '../../graphql/cart';
 
-function CartItemData({ imageUrl, title, price }: Pick<CartType, 'imageUrl' | 'price' | 'title'>) {
+function CartItemData({ product: { price, imageUrl, title } }: Pick<CartType, 'product'>) {
   return (
     <div className="cart-item-data">
       <img className="cart-item-data__image" src={imageUrl} alt="productImage" />
