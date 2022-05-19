@@ -6,18 +6,28 @@ const setJSON = (data: Product[]) => writeDB(DBField.PRODUCTS, data);
 
 const productResolver: Resolver = {
   Query: {
-    products: (parent, { cursor = '' }, { db }, info) => {
-      //? ''값이면 -1을 리턴하므로 0부터 검색
-      const fromIndex = db.products.findIndex((product) => product.id === cursor) + 1;
+    products: (parent, { cursor = '', showDeleted = false }, { db }, info) => {
+      //? 최신순으로 정렬
+      const [hasCreatedAt, noCreatedAt] = [
+        db.products.filter((item) => !!item.createdAt).sort((a, b) => b.createdAt! - a.createdAt!),
+        db.products.filter((item) => !item.createdAt),
+      ];
 
-      return db.products.slice(fromIndex, fromIndex + 15) || [];
+      const filteredDB = showDeleted ? [...hasCreatedAt, ...noCreatedAt] : hasCreatedAt;
+
+      //? ''값이면 -1을 리턴하므로 0부터 검색
+      const fromIndex = filteredDB.findIndex((product) => product.id === cursor) + 1;
+
+      return filteredDB.slice(fromIndex, fromIndex + 15) || [];
     },
+
     product: (parent, { id }, { db }, info) => {
       const found = db.products.find((item) => item.id === id);
       if (found) return found;
       return null;
     },
   },
+
   Mutation: {
     addProduct: (parent, { imageUrl, price, title, description }, { db }) => {
       const newProduct = {
@@ -36,6 +46,7 @@ const productResolver: Resolver = {
       setJSON(db.products);
       return newProduct;
     },
+
     updateProduct: (parent, { id, ...data }, { db }) => {
       const existProductIndex = db.products.findIndex((item) => item.id === id);
       if (existProductIndex === -1) throw new Error('없는 상품입니다.');
@@ -50,6 +61,7 @@ const productResolver: Resolver = {
       setJSON(db.products);
       return updatedItem;
     },
+
     deleteProduct: (parent, { id }, { db }) => {
       //? 물리적 삭제가 아닌 논리적 삭제로 구현
       //? createdAt을 삭제하면 판매하지 않는 상품임.

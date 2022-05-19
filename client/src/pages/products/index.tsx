@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import { useEffect, useRef } from 'react';
+import { useInfiniteQuery } from 'react-query';
 import ProductsList from '../../components/product/List';
 import { GET_PRODUCTS, Products } from '../../graphql/products';
 import useIntersection from '../../hooks/useIntersection';
@@ -11,8 +11,9 @@ function ProductsListPage() {
 
   const { data, fetchNextPage, isSuccess, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<Products>(
-      QueryKeys.PRODUCTS,
-      ({ pageParam = '' }) => graphqlFetcher(GET_PRODUCTS, { cursor: pageParam }),
+      [QueryKeys.PRODUCTS, 'products'],
+      ({ pageParam = '' }) =>
+        graphqlFetcher(GET_PRODUCTS, { cursor: pageParam, showDeleted: false }),
       {
         getNextPageParam: (lastPage, allPages) => {
           if (!lastPage.products.at(-1)?.id) {
@@ -33,6 +34,7 @@ function ProductsListPage() {
 
   return (
     <>
+      <h2>Products List</h2>
       <ProductsList data={data?.pages || []} />
       <div ref={fetchMoreRef} />
     </>

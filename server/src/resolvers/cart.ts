@@ -84,6 +84,7 @@ const cartResolver: Resolver = {
       return ids;
     },
   },
+  //? Type Resolver
   //? CartItem을 return할 때 각 CartItem마다 product에서 찾아서 가져온다
   CartItem: {
     product: (cartItem, args, { db }) => db.products.find((product) => product.id === cartItem.id),

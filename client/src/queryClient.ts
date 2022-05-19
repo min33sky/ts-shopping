@@ -18,8 +18,8 @@ export const getClient = (() => {
       client = new QueryClient({
         defaultOptions: {
           queries: {
-            cacheTime: 1000 * 60 * 60 * 24, // 하루동안 캐시
-            staleTime: 1000 * 60, // 1분동안 최신 상태 유지
+            cacheTime: 1000 * 60 * 60 * 24, //* 하루동안 캐시
+            staleTime: 1000 * 60, //* 1분동안 최신 상태 유지
             refetchOnMount: false,
             refetchOnReconnect: false,
             refetchOnWindowFocus: false,

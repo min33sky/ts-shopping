@@ -24,12 +24,12 @@ function PreviewPay({
     <div className="cart-preview">
       <h2>{handleTitle}</h2>
       <ul>
-        {checkedItems.map(({ id, product: { imageUrl, price, title }, amount }) => (
+        {checkedItems.map(({ id, product, amount }) => (
           <li key={id}>
-            <CartItemData imageUrl={imageUrl} price={price} title={title} />
+            <CartItemData product={product} />
             <div>
               <p>수량: {amount}개</p>
-              <p>금액: ${amount * price}</p>
+              <p>금액: ${amount * product.price}</p>
             </div>
           </li>
         ))}

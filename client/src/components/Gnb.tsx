@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * 네비게이션 바
+ * @returns
+ */
 function Gnb() {
   return (
     <nav className="gnb">
@@ -12,6 +16,9 @@ function Gnb() {
         </li>
         <li>
           <Link to="/cart">장바구니</Link>
+        </li>
+        <li>
+          <Link to="/admin">어드민</Link>
         </li>
       </ul>
     </nav>
