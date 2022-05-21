@@ -31,6 +31,11 @@ function Payment() {
         alert('결제 성공 :)');
         navigate('/products', { replace: true }); // 뒤로가기 ㄴㄴ
       },
+      onError: (error: any) => {
+        alert('결제 실패');
+        console.log('에러: ', JSON.parse(JSON.stringify(error)));
+        setModalShown(false);
+      },
     });
   };
 

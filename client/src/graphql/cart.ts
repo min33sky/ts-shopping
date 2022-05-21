@@ -56,6 +56,7 @@ export const GET_CART = gql`
         price
         title
         description
+        createdAt
       }
       amount
     }

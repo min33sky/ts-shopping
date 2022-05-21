@@ -141,15 +141,18 @@ function CartItem(
         name="select-item"
         ref={ref}
         data-id={id}
+        disabled={!product.createdAt}
       />
       <CartItemData product={product} />
-      <input
-        type="number"
-        className="cart-item__amount"
-        value={amount}
-        min={1}
-        onChange={handleUpdateAmount}
-      />
+      {product.createdAt && (
+        <input
+          type="number"
+          className="cart-item__amount"
+          value={amount}
+          min={1}
+          onChange={handleUpdateAmount}
+        />
+      )}
       <button className="cart-item__remove" onClick={handleDeleteCart}>
         삭제
       </button>

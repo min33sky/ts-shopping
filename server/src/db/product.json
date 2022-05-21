@@ -732,64 +732,56 @@
     "title": "임시상품 91",
     "description": "임시상세내용 91",
     "imageUrl": "https://picsum.photos/id/101/200/200",
-    "price": 35255,
-    "createdAt": 1644242676243
+    "price": 35255
   },
   {
     "id": "034ed762-946a-4c54-afaf-96561e72055c",
     "title": "임시상품 92",
     "description": "임시상세내용 92",
     "imageUrl": "https://picsum.photos/id/70/200/200",
-    "price": 15333,
-    "createdAt": 1644260676243
+    "price": 15333
   },
   {
     "id": "0b7a4378-3a07-41f7-b7ff-e4e05661b6e7",
     "title": "임시상품 93",
     "description": "임시상세내용 93",
     "imageUrl": "https://picsum.photos/id/157/200/200",
-    "price": 24848,
-    "createdAt": 1644278676243
+    "price": 24848
   },
   {
     "id": "64377916-7cc7-4048-bb23-b104ce37afa8",
     "title": "임시상품 94",
     "description": "임시상세내용 94",
     "imageUrl": "https://picsum.photos/id/60/200/200",
-    "price": 75578,
-    "createdAt": 1644296676243
+    "price": 75578
   },
   {
     "id": "e5497f0b-dae7-4271-8c1d-d0e79fa77c28",
     "title": "임시상품 95",
     "description": "임시상세내용 95",
     "imageUrl": "https://picsum.photos/id/0/200/200",
-    "price": 49080,
-    "createdAt": 1644314676243
+    "price": 49080
   },
   {
     "id": "e3a8a309-39c2-4175-a3e6-75371357d186",
     "title": "임시상품 96",
     "description": "임시상세내용 96",
     "imageUrl": "https://picsum.photos/id/99/200/200",
-    "price": 26253,
-    "createdAt": 1644332676243
+    "price": 26253
   },
   {
     "id": "596e599e-4983-4f96-8e3f-d934702d5f25",
     "title": "임시상품 97",
     "description": "임시상세내용 97",
     "imageUrl": "https://picsum.photos/id/194/200/200",
-    "price": 47597,
-    "createdAt": 1644350676243
+    "price": 47597
   },
   {
     "id": "8cdd7e63-6f9c-484e-ab8d-77be0acbdc83",
     "title": "임시상품 98",
     "description": "임시상세내용 98",
     "imageUrl": "https://picsum.photos/id/128/200/200",
-    "price": 55206,
-    "createdAt": 1644368676243
+    "price": 55206
   },
   {
     "id": "0b90996f-9410-40a0-8b4c-50ac8e2d2ea0",
@@ -804,7 +796,7 @@
     "imageUrl": "https://api.lorem.space/image/movie?w=150&h=220",
     "price": 1557,
     "title": "주간소년점프",
-    "description": "ㅋㅋㅋㅋ",
+    "description": "ㅋㅋ",
     "createdAt": 1652972938032
   }
 ]

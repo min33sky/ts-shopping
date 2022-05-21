@@ -77,9 +77,26 @@ const cartResolver: Resolver = {
       return cartId;
     },
 
+    /**
+     * 결제하기
+     * @param parent
+     * @param ids 구매할 상품의 아이디들의 배열
+     * @param param2
+     * @param info
+     * @returns
+     */
     executePay: (parent, { ids }, { db }, info) => {
-      const filtered = db.cart.filter((item) => !ids.includes(item.id));
-      db.cart = filtered;
+      //* 구매할 상품이 품절인지 확인하기
+      const productsToBuy = db.cart.filter((cartItem) => ids.includes(cartItem.id));
+      const isError = productsToBuy.some((item) => {
+        const product = db.products.find((product) => product.id === item.id);
+        return !product?.createdAt;
+      });
+
+      if (isError) throw new Error('품절된 상품이 포함되어 있습니다.');
+
+      const newCartData = db.cart.filter((cartItem) => !ids.includes(cartItem.id));
+      db.cart = newCartData;
       setJSON(db.cart);
       return ids;
     },

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import {
   AdminItemType,
+  DELETE_PRODUCT,
   Product,
   UpdateProductVariables,
   UPDATE_PRODUCT,
@@ -26,8 +27,22 @@ function AdminItem({
     ({ title, imageUrl, price, description }) =>
       graphqlFetcher(UPDATE_PRODUCT, { id, title, imageUrl, price, description }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log('수정한 상품 정보: ', data);
         exitEdit();
+        queryClient.invalidateQueries(QueryKeys.PRODUCTS, {
+          exact: false,
+          refetchInactive: true, //? inactive 상태인 상품목록도 Refetch
+        });
+      },
+    }
+  );
+
+  const { mutate: deleteProduct } = useMutation<Product, Error, { id: string }>(
+    ({ id }) => graphqlFetcher(DELETE_PRODUCT, { id }),
+    {
+      onSuccess: (data) => {
+        console.log('삭제한 상품 정보: ', data);
         queryClient.invalidateQueries(QueryKeys.PRODUCTS, {
           exact: false,
           refetchInactive: true, //? inactive 상태인 상품목록도 Refetch
@@ -41,6 +56,11 @@ function AdminItem({
     const formData = new FormData(e.currentTarget);
     const obj = arrayToObj([...formData]) as UpdateProductVariables;
     updateProduct(obj);
+  };
+
+  const deleteItem = () => {
+    console.log('삭제');
+    deleteProduct({ id });
   };
 
   if (isEditing) {
@@ -79,6 +99,9 @@ function AdminItem({
       </Link>
       <button className="product-item__add-cart" onClick={startEdit}>
         수정
+      </button>
+      <button className="product-item__add-cart" onClick={deleteItem}>
+        삭제
       </button>
     </li>
   );

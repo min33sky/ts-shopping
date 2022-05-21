@@ -14,6 +14,8 @@ function CartList({ items }: { items: CartType[] }) {
   const formRef = useRef<HTMLFormElement>(null);
   const checkboxRefs = items.map(() => createRef<HTMLInputElement>()); //? 자식 컴포넌트들의 ref 배열
 
+  const validProducts = items.filter((item) => item.product.createdAt); //* 품절 안된 상품들만 분류한다.
+
   /**
    *? 자식 체크박스들이 전체 선택 체크박스를 제어하는 핸들러
    ** 모두 체크되었다면 전체 선택 체크박스도 체크
@@ -22,7 +24,7 @@ function CartList({ items }: { items: CartType[] }) {
     if (!formRef.current) return;
     const formData = new FormData(formRef.current);
     const selectedCount = formData.getAll('select-item').length; //* 체크된 체크박스의 개수를 가져옴
-    const isAllChecked = selectedCount === items.length;
+    const isAllChecked = selectedCount === validProducts.length;
     formRef.current.querySelector<HTMLInputElement>('#select-all')!.checked = isAllChecked;
   };
 
@@ -32,7 +34,9 @@ function CartList({ items }: { items: CartType[] }) {
    */
   const setItemsCheckedFromAll = (targetInput: HTMLInputElement) => {
     const isChecked = targetInput.checked;
-    checkboxRefs.forEach((inputElem) => (inputElem.current!.checked = isChecked));
+    checkboxRefs
+      .filter((item) => !item.current?.disabled)
+      .forEach((inputElem) => (inputElem.current!.checked = isChecked));
   };
 
   /**
