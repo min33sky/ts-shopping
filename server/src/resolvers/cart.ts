@@ -1,5 +1,7 @@
+import { collection, DocumentData, getDoc, getDocs } from 'firebase/firestore';
 import { writeDB, DBField } from './../DBController';
 import { Cart, Resolver } from '../types/resolver';
+import { db } from '../../firebase';
 
 /**
  * JSON 파일에 저장하기
@@ -10,12 +12,24 @@ const setJSON = (data: Cart) => writeDB(DBField.CART, data);
 
 const cartResolver: Resolver = {
   Query: {
-    cart: (parent, args, context, info) => {
+    cart: async (parent, args, context, info) => {
+      const cart = collection(db, 'cart');
+      const cartSnap = await getDocs(cart);
+      const data: DocumentData[] = [];
+      cartSnap.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      return data;
+
       /**
        *? CartItem[]을 리턴하는데 product는 DB에 존재하지 않으므로
        *? CartItem의 id에 해당하는 product를 찾아서 리턴해야한다.
        */
-      return context.db.cart;
+      // return context.db.cart;
     },
   },
   Mutation: {
@@ -104,7 +118,14 @@ const cartResolver: Resolver = {
   //? Type Resolver
   //? CartItem을 return할 때 각 CartItem마다 product에서 찾아서 가져온다
   CartItem: {
-    product: (cartItem, args, { db }) => db.products.find((product) => product.id === cartItem.id),
+    product: async (cartItem, args) => {
+      const product = await getDoc(cartItem.product);
+      const data = product.data() as any;
+      return {
+        ...data,
+        id: product.id,
+      };
+    },
   },
 };
 
