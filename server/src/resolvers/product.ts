@@ -1,7 +1,7 @@
 import { Product, Resolver } from '../types/resolver';
-import { v4 as uuid } from 'uuid';
 import { DBField, writeDB } from '../DBController';
 import {
+  addDoc,
   collection,
   doc,
   DocumentData,
@@ -10,7 +10,9 @@ import {
   limit,
   orderBy,
   query,
+  serverTimestamp,
   startAfter,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -21,17 +23,32 @@ const PAGE_SIZE = 15;
 
 const productResolver: Resolver = {
   Query: {
+    /**
+     * 상품 리스트를 가져온다
+     * @param cursor 마지막 상품의 ID
+     * @param showDeleted 고객용인지 Admin용인지 구분하는 값
+     * @returns
+     */
     products: async (parent, { cursor = '', showDeleted = false }) => {
+      //* 'products' Collection을 가져온다.
       const products = collection(db, 'products');
+
+      //* 쿼리에 필요한 옵션들을 설정
       const queryOptions = [orderBy('createdAt', 'desc')];
+
+      //? 해당 커서 이후의 데이터부터 가져오도록 설정
       if (cursor) {
         const snapshot = await getDoc(doc(db, 'products', cursor));
         queryOptions.push(startAfter(snapshot));
       }
+
+      //? createdAt이 있는 상품만 고객용 상품 목록에서 볼 수 있다.
       if (!showDeleted) queryOptions.unshift(where('createdAt', '!=', null));
-      const q = query(products, ...queryOptions, limit(PAGE_SIZE));
-      const snapshot = await getDocs(q);
+
+      const snapshot = await getDocs(query(products, ...queryOptions, limit(PAGE_SIZE)));
+
       const data: DocumentData[] = [];
+
       snapshot.forEach((doc) =>
         data.push({
           id: doc.id,
@@ -52,6 +69,11 @@ const productResolver: Resolver = {
       // return filteredDB.slice(fromIndex, fromIndex + 15) || [];
     },
 
+    /**
+     * 상품 정보를 가져온다.
+     * @param id 상품 ID
+     * @returns
+     */
     product: async (parent, { id }) => {
       const snapshot = await getDoc(doc(db, 'products', id));
       return {
@@ -62,55 +84,66 @@ const productResolver: Resolver = {
   },
 
   Mutation: {
-    addProduct: (parent, { imageUrl, price, title, description }, { db }) => {
+    /**
+     * 상품 추가
+     * @param parent
+     * @param param1
+     * @returns
+     */
+    addProduct: async (parent, { imageUrl, price, title, description }) => {
       const newProduct = {
-        id: uuid(),
         imageUrl,
         price,
         title,
         description,
-        createdAt: Date.now(),
+        createdAt: serverTimestamp(),
       };
 
-      // DB에 넣고
-      db.products.push(newProduct);
+      const result = await addDoc(collection(db, 'products'), newProduct);
+      const snapshot = await getDoc(result);
 
-      // JSON 저장
-      setJSON(db.products);
-      return newProduct;
+      return {
+        id: snapshot.id,
+        ...snapshot.data(),
+      };
     },
 
-    updateProduct: (parent, { id, ...data }, { db }) => {
-      const existProductIndex = db.products.findIndex((item) => item.id === id);
-      if (existProductIndex === -1) throw new Error('없는 상품입니다.');
+    /**
+     * 상품 업데이트
+     * @param id 수정할 상품의 아이디
+     * @param param1
+     * @returns
+     */
+    updateProduct: async (parent, { id, ...data }) => {
+      const productRef = doc(db, 'products', id);
+      if (!productRef) throw new Error('해당 상품이 존재하지 않습니다.');
 
-      const updatedItem = {
-        ...db.products[existProductIndex],
+      await updateDoc(productRef, {
         ...data,
+        createdAt: serverTimestamp(),
+      });
+
+      const snapshot = await getDoc(productRef);
+      return {
+        id: snapshot.id,
+        ...snapshot.data(),
       };
-
-      db.products.splice(existProductIndex, 1, updatedItem);
-
-      setJSON(db.products);
-      return updatedItem;
     },
 
-    deleteProduct: (parent, { id }, { db }) => {
-      //? 물리적 삭제가 아닌 논리적 삭제로 구현
-      //? createdAt을 삭제하면 판매하지 않는 상품임.
+    /**
+     * 상품 삭제
+     * ? 물리적 삭제가 아닌 논리적 삭제로 구현
+     * ? createdAt을 삭제하면 판매하지 않는 상품임.
+     * @param id 삭제할 상품의 id
+     * @returns
+     */
+    deleteProduct: async (parent, { id }) => {
+      const productRef = doc(db, 'products', id);
+      if (!productRef) throw new Error('해당 상품이 존재하지 않습니다.');
 
-      const existProductIndex = db.products.findIndex((item) => item.id === id);
-      if (existProductIndex === -1) throw new Error('없는 상품입니다.');
-
-      //* 삭제할 상품을 가져와서 createdAt 제거하기
-      const deletedItem = {
-        ...db.products[existProductIndex],
-      };
-
-      delete deletedItem.createdAt;
-
-      db.products.splice(existProductIndex, 1, deletedItem);
-      setJSON(db.products);
+      await updateDoc(productRef, {
+        createdAt: null,
+      });
 
       return id;
     },

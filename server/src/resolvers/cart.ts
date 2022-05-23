@@ -1,4 +1,15 @@
-import { collection, DocumentData, getDoc, getDocs } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentData,
+  getDoc,
+  getDocs,
+  increment,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { writeDB, DBField } from './../DBController';
 import { Cart, Resolver } from '../types/resolver';
 import { db } from '../../firebase';
@@ -33,37 +44,46 @@ const cartResolver: Resolver = {
     },
   },
   Mutation: {
-    addCart: (parent, { productId }, { db }, info) => {
-      //* 해당 상품이 있는지 확인
-      const targetProduct = db.products.find((item) => item.id === productId);
-      if (!targetProduct) throw new Error('해당 상품이 없습니다.');
+    /**
+     * 카트에 상품 추가
+     * @param parent
+     * @param param1
+     * @returns
+     */
+    addCart: async (parent, { productId }) => {
+      if (!productId) throw new Error('상품 ID가 필요합니다.');
+      const productRef = doc(db, 'products', productId);
+      const cartCollection = collection(db, 'cart');
 
-      //* 카트에 이미 상품이 존재하는지 확인
-      const existCartIndex = db.cart.findIndex((item) => item.id === productId);
+      //? getDoc()은 쿼리를 못날림 😠
+      const exist = await (
+        await getDocs(query(cartCollection, where('product', '==', productRef)))
+      ).docs[0];
 
-      if (existCartIndex > -1) {
-        const newCartItem = {
-          id: productId,
-          amount: db.cart[existCartIndex].amount + 1,
-        };
+      let cartRef;
 
-        db.cart.splice(existCartIndex, 1, newCartItem);
-        setJSON(db.cart);
-        return newCartItem;
+      if (exist) {
+        // 기존 카트에 수량을 1씩 증가시킴
+        cartRef = doc(db, 'cart', exist.id);
+        await updateDoc(cartRef, {
+          amount: increment(1),
+        });
+      } else {
+        // 카트에 상품을 추가함
+        cartRef = await addDoc(cartCollection, {
+          amount: 1,
+          product: productRef,
+        });
       }
 
-      //* 카트에 상품 추가
-      const newItem = {
-        id: productId,
-        amount: 1,
+      const cartSnapshot = await getDoc(cartRef);
+      return {
+        id: cartSnapshot.id,
+        product: productRef,
+        ...cartSnapshot.data(),
       };
-
-      db.cart.push(newItem);
-      setJSON(db.cart);
-
-      //? 새로 추가한 상품 데이터를 리턴해주자
-      return newItem;
     },
+
     updateCart: (parent, { cartId, amount }, { db }, info) => {
       const existCartIndex = db.cart.findIndex((item) => item.id === cartId);
 
