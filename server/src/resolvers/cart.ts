@@ -12,7 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { writeDB, DBField } from './../DBController';
-import { Cart, Resolver } from '../types/resolver';
+import { Cart, Product, Resolver } from '../types/resolver';
 import { db } from '../../firebase';
 
 /**
@@ -92,7 +92,7 @@ const cartResolver: Resolver = {
     /**
      * 장바구니의 상품 업데이트
      * @param parent
-     * @param cartId 장바구니에 담긴 상품의 ID
+     * @param cartId 장바구니 ID
      * @param amount 변경할 상품의 수량
      * @returns
      */
@@ -114,7 +114,7 @@ const cartResolver: Resolver = {
     /**
      * 장바구니에서 상품 제거
      * @param parent
-     * @param cartId 삭제할 상품의 ID
+     * @param cartId 삭제할 장바구니 ID
      * @returns
      */
     deleteCart: async (parent, { cartId }) => {
@@ -129,27 +129,36 @@ const cartResolver: Resolver = {
     /**
      * 결제하기
      * @param parent
-     * @param ids 구매할 상품의 아이디들의 배열
-     * @param param2
-     * @param info
+     * @param ids 구매할 상품이 담긴 장바구니 아이디 배열
      * @returns
      */
-    executePay: (parent, { ids }, { db }, info) => {
-      //* 구매할 상품이 품절인지 확인하기
-      const productsToBuy = db.cart.filter((cartItem) => ids.includes(cartItem.id));
-      const isError = productsToBuy.some((item) => {
-        const product = db.products.find((product) => product.id === item.id);
-        return !product?.createdAt;
-      });
+    executePay: async (parent, { ids }) => {
+      // createdAt이 비어있지 않은 ids들에 대해서 결제처리가 완료되었다고 가정하고
+      // cart에서 ids들을 지워준다.
+      const deleted: string[] = [];
 
-      if (isError) throw new Error('품절된 상품이 포함되어 있습니다.');
+      for await (const id of ids) {
+        const cartRef = doc(db, 'cart', id);
+        const cartSnapshot = await getDoc(cartRef);
+        const cartData = cartSnapshot.data();
 
-      const newCartData = db.cart.filter((cartItem) => !ids.includes(cartItem.id));
-      db.cart = newCartData;
-      setJSON(db.cart);
-      return ids;
+        //? 장바구니에 담긴 상품이 존재하는 지 확인
+        const productRef = cartData?.product;
+        if (!productRef) throw new Error('상품 정보가 없다.');
+
+        //? 품절인 상품인지 확인
+        const product = (await getDoc(productRef)).data() as Product;
+        if (!product.createdAt) throw new Error('풀절인 상품이 포함되어 있습니다.');
+
+        //? 장바구니에서 제거하고 구매한 상품을 배열에 담아 리턴
+        await deleteDoc(cartRef);
+        deleted.push(id);
+      }
+
+      return deleted;
     },
   },
+
   //? Type Resolver
   //? CartItem을 return할 때 각 CartItem마다 product에서 찾아서 가져온다
   CartItem: {
