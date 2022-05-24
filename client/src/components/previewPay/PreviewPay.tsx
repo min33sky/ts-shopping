@@ -26,7 +26,12 @@ function PreviewPay({
       <ul>
         {checkedItems.map(({ id, product, amount }) => (
           <li key={id}>
-            <CartItemData product={product} />
+            <CartItemData
+              title={product.title}
+              createdAt={product.createdAt}
+              imageUrl={product.imageUrl}
+              price={product.price}
+            />
             <div>
               <p>수량: {amount}개</p>
               <p>금액: ${amount * product.price}</p>

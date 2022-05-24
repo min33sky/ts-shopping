@@ -34,5 +34,5 @@ import envLoader from './envLoader';
 
   await app.listen({ port });
 
-  console.log(`server listening on 8000`);
+  console.log(`server listening on ${port}`);
 })();

@@ -143,7 +143,12 @@ function CartItem(
         data-id={id}
         disabled={!product.createdAt}
       />
-      <CartItemData product={product} />
+      <CartItemData
+        title={product.title}
+        price={product.price}
+        createdAt={product.createdAt}
+        imageUrl={product.imageUrl}
+      />
       {product.createdAt && (
         <input
           type="number"
