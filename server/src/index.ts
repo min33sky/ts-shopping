@@ -20,6 +20,8 @@ import envLoader from './envLoader';
     // },
   });
 
+  console.log('클라이언트 유알엘: ', clientUrl);
+
   const app = express();
   await server.start();
   server.applyMiddleware({
