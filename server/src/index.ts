@@ -1,4 +1,3 @@
-import { DBField, readDB } from './DBController';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import schema from './schema';
