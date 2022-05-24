@@ -74,13 +74,12 @@ export const fetcher = async ({
 };
 
 //************************* Graphql API용 ********************************/
-// const BASE_URL_GRAPHQL = 'http://localhost:8000/graphql';
 const BASE_URL_GRAPHQL = import.meta.env.VITE_SERVER_URL as string;
 
 export const graphqlFetcher = (query: RequestDocument, variables = {}) =>
   request(`${BASE_URL_GRAPHQL}/graphql`, query, variables, {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': BASE_URL,
+    'Access-Control-Allow-Origin': BASE_URL_GRAPHQL,
   });
 
 //************************* React-Query에서 사용할 QUERY kEYS**************/
