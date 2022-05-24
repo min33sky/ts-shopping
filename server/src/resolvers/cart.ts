@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -43,11 +44,12 @@ const cartResolver: Resolver = {
       // return context.db.cart;
     },
   },
+
   Mutation: {
     /**
      * 카트에 상품 추가
      * @param parent
-     * @param param1
+     * @param productId 구매할 상품의 ID
      * @returns
      */
     addCart: async (parent, { productId }) => {
@@ -55,7 +57,10 @@ const cartResolver: Resolver = {
       const productRef = doc(db, 'products', productId);
       const cartCollection = collection(db, 'cart');
 
-      //? getDoc()은 쿼리를 못날림 😠
+      /**
+       *? 상품 하나를 추가하는데 getDocs()를 사용한 이유??
+       ** getDoc()은 쿼리를 못날림 😠
+       */
       const exist = await (
         await getDocs(query(cartCollection, where('product', '==', productRef)))
       ).docs[0];
@@ -84,30 +89,40 @@ const cartResolver: Resolver = {
       };
     },
 
-    updateCart: (parent, { cartId, amount }, { db }, info) => {
-      const existCartIndex = db.cart.findIndex((item) => item.id === cartId);
-
-      if (existCartIndex === -1) throw new Error('상품이 존재하지 않습니다.');
-
-      const newItem = {
-        id: cartId,
+    /**
+     * 장바구니의 상품 업데이트
+     * @param parent
+     * @param cartId 장바구니에 담긴 상품의 ID
+     * @param amount 변경할 상품의 수량
+     * @returns
+     */
+    updateCart: async (parent, { cartId, amount }) => {
+      if (amount < 1) throw new Error('상품 수량은 1 이하로 바꿀 수 없습니다.');
+      const cartRef = doc(db, 'cart', cartId);
+      if (!cartRef) throw new Error('장바구니에 해당 상품이 존재하지 않습니다.');
+      await updateDoc(cartRef, {
         amount,
+      });
+
+      const cartSnapshot = await getDoc(cartRef);
+      return {
+        ...cartSnapshot.data(),
+        id: cartSnapshot.id,
       };
-
-      db.cart.splice(existCartIndex, 1, newItem);
-      setJSON(db.cart);
-
-      return newItem;
     },
 
-    deleteCart: (parent, { cartId }, { db }, info) => {
-      const existCartIndex = db.cart.findIndex((item) => item.id === cartId);
+    /**
+     * 장바구니에서 상품 제거
+     * @param parent
+     * @param cartId 삭제할 상품의 ID
+     * @returns
+     */
+    deleteCart: async (parent, { cartId }) => {
+      const cartRef = doc(db, 'cart', cartId);
+      if (!cartRef) throw new Error('삭제할 상품이 없습니다.');
 
-      if (existCartIndex === -1) throw new Error('해당 상품이 없습니다.');
+      await deleteDoc(cartRef);
 
-      const filtered = db.cart.filter((item) => item.id !== cartId);
-      db.cart = filtered;
-      setJSON(db.cart);
       return cartId;
     },
 
