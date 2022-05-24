@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import { writeDB, DBField } from './../DBController';
 import { Cart, Product, Resolver } from '../types/resolver';
-import { db } from '../../firebase';
+import { db } from '../firebase';
 
 /**
  * JSON 파일에 저장하기
